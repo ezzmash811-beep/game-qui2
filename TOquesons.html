@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <title>بنك أسئلة مونوبولي المطور</title>
+  <title>بنك أسئلة مونوبولي المطور V2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     :root {
@@ -13,150 +13,108 @@
       --card-bg: #ffffff;
       --text: #2c3e50;
     }
-
     body {
       margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: var(--bg); color: var(--text);
       display: flex; justify-content: center; align-items: center; min-height: 100vh;
     }
-
     .container { width: 90%; max-width: 500px; text-align: center; }
-    .title { color: var(--primary); margin-bottom: 30px; font-size: 2rem; }
-
+    .title { color: var(--primary); margin-bottom: 20px; font-size: 1.8rem; font-weight: bold; }
     .card {
-      background: var(--card-bg); border-radius: 20px; padding: 30px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.1); position: relative;
-      border-top: 8px solid var(--primary); min-height: 250px;
-      display: flex; flex-direction: column; justify-content: center;
+      background: var(--card-bg); border-radius: 20px; padding: 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-top: 8px solid var(--primary);
+      min-height: 300px; display: flex; flex-direction: column; justify-content: center;
     }
-
-    .badges { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-    .badge { padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; color: white; }
+    .badges { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+    .badge { padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; font-weight: bold; color: white; }
     .badge-category { background: #3498db; }
     .diff-easy { background: #2ecc71; }
     .diff-medium { background: #f39c12; }
     .diff-hard { background: #e74c3c; }
-
-    .question-text {
-      font-size: 1.5rem; line-height: 1.6; margin-bottom: 25px;
-      font-weight: bold; color: #34495e; min-height: 80px;
-    }
-
-    .reward-box {
-      font-size: 1.2rem; font-weight: bold; padding: 12px; border-radius: 10px;
-      margin-bottom: 20px; border: 2px dashed; transition: all 0.3s;
-    }
-
-    .answer-box {
-      display: none; background: #ecf0f1; padding: 15px; border-radius: 10px;
-      font-size: 1.2rem; color: #16a085; font-weight: bold;
-      margin-bottom: 20px; border-right: 5px solid #16a085; text-align: right;
-    }
-
-    .buttons-container { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-
-    .btn {
-      color: white; border: none; padding: 15px; font-size: 1.1rem; 
-      border-radius: 10px; cursor: pointer; font-weight: bold; 
-      transition: all 0.2s; width: 100%;
-    }
-
-    .btn:hover { transform: translateY(-2px); }
-    .btn:disabled { background: #bdc3c7 !important; cursor: not-allowed; }
-    
+    .question-text { font-size: 1.4rem; line-height: 1.5; margin-bottom: 20px; font-weight: bold; color: #34495e; }
+    .reward-box { font-size: 1.1rem; font-weight: bold; padding: 10px; border-radius: 10px; margin-bottom: 15px; border: 2px dashed; }
+    .answer-box { display: none; background: #ecf0f1; padding: 15px; border-radius: 10px; font-size: 1.1rem; color: #16a085; font-weight: bold; margin-bottom: 15px; border-right: 5px solid #16a085; }
+    .buttons-container { display: flex; flex-direction: column; gap: 10px; }
+    .btn { color: white; border: none; padding: 14px; font-size: 1rem; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
     .btn-primary { background: var(--primary); }
     .btn-gold { background: var(--gold); }
     .btn-secondary { background: #7f8c8d; }
-    
-    #initialState { font-size: 1.3rem; color: #7f8c8d; margin-bottom: 20px; }
+    #initialState { font-size: 1.2rem; color: #7f8c8d; }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1 class="title">🎲 بنك الأسئلة والجوائز</h1>
-    
+    <h1 class="title">🇵🇸 بنك الأسئلة والجوائز</h1>
     <div class="card">
-      <div id="initialState">اختر نوع السحب الذي تريده من الأزرار بالأسفل..</div>
-
+      <div id="initialState">بانتظار سحب السؤال...</div>
       <div id="questionContent" style="display: none;">
         <div class="badges">
-          <span class="badge badge-category" id="qCategory">عامة</span>
-          <span class="badge" id="qDifficulty">متوسط</span>
+          <span class="badge badge-category" id="qCategory"></span>
+          <span class="badge" id="qDifficulty"></span>
         </div>
-        
-        <div class="question-text" id="qText">هنا يظهر نص السؤال؟</div>
-        <div class="reward-box" id="qReward">🎁 الجائزة تظهر هنا</div>
-
-        <div class="answer-box" id="aBox">
-          الإجابة: <span id="aText">هنا تظهر الإجابة</span>
-        </div>
+        <div class="question-text" id="qText"></div>
+        <div class="reward-box" id="qReward"></div>
+        <div class="answer-box" id="aBox">الإجابة: <span id="aText"></span></div>
       </div>
-      
-      <button class="btn btn-secondary" id="btnShowAnswer" onclick="showAnswer()" style="display: none; margin-bottom: 15px;">👀 إظهار الإجابة الصحيحة</button>
-      
+      <button class="btn btn-secondary" id="btnShowAnswer" onclick="showAnswer()" style="display: none; margin-bottom: 10px;">👁 إظهار الإجابة</button>
       <div class="buttons-container">
-        <button class="btn btn-primary" id="btnDrawSteps" onclick="drawNewQuestion('steps')">🎯 سحب سؤال للتقدم (خطوات)</button>
-        <button class="btn btn-gold" id="btnDrawMoney" onclick="drawNewQuestion('money')">💰 جاوب واربح (مبالغ مالية)</button>
+        <button class="btn btn-primary" onclick="drawNewQuestion('steps')">🎯 سحب سؤال للتقدم (خطوات)</button>
+        <button class="btn btn-gold" onclick="drawNewQuestion('money')">💰 جاوب واربح (مبالغ مالية)</button>
       </div>
     </div>
   </div>
 
   <script>
-    // بنك أسئلة الخطوات (تركيز على المعلومات العامة والدينية)
     const stepsQuestions = [
-      { text: "ما هي القبلة الأولى للمسلمين؟", answer: "المسجد الأقصى", category: "دينية", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
-      { text: "من هو النبي الذي لُقب بـ (أبو الأنبياء)؟", answer: "إبراهيم عليه السلام", category: "دينية", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
-      { text: "ما هو أعمق محيط في العالم؟", answer: "المحيط الهادئ", category: "جغرافيا", difficulty: "متوسط", diffClass: "diff-medium", value: 6 },
-      { text: "في أي مدينة ولد النبي محمد ﷺ؟", answer: "مكة المكرمة", category: "دينية", difficulty: "سهل", diffClass: "diff-easy", value: 2 },
-      { text: "كم عدد القراءات الصحيحة للقرآن الكريم؟", answer: "عشر قراءات", category: "دينية", difficulty: "صعب", diffClass: "diff-hard", value: 10 },
-      { text: "ما هو الحيوان الذي يُسمى 'سفينة الصحراء'؟", answer: "الجمل", category: "علوم", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
-      { text: "من هو القائد المسلم الذي فتح الأندلس؟", answer: "طارق بن زياد", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 7 },
-      { text: "ما هو الكوكب الذي يمتلك حلقات حوله؟", answer: "زحل", category: "فضاء", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
-      { text: "ما اسم ناقة النبي محمد ﷺ؟", answer: "القصواء", category: "دينية", difficulty: "صعب", diffClass: "diff-hard", value: 12 },
-      { text: "أين يوجد أطول سور في العالم؟", answer: "في الصين", category: "عجائب", difficulty: "متوسط", diffClass: "diff-medium", value: 5 }
+      { text: "ما هي المدينة الفلسطينية التي تُلقب بـ 'عروس الشمال'؟", answer: "نابلس", category: "مدن", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "ما هي السورة التي بدأت بوصف رحلة الإسراء والمعراج؟", answer: "سورة الإسراء", category: "قرآن", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
+      { text: "كم عدد أبواب المسجد الأقصى المفتوحة حالياً؟", answer: "10 أبواب", category: "القدس", difficulty: "متوسط", diffClass: "diff-medium", value: 7 },
+      { text: "ما هو أعلى جبل في فلسطين؟", answer: "جبل الجرمق", category: "جغرافيا", difficulty: "صعب", diffClass: "diff-hard", value: 11 },
+      { text: "في أي مدينة يقع المسجد الإبراهيمي؟", answer: "الخليل", category: "معالم", difficulty: "سهل", diffClass: "diff-easy", value: 5 },
+      { text: "من هو صاحب لقب 'فارس الأمة' من الصحابة؟", answer: "أبو قتادة الأنصاري", category: "صحابة", difficulty: "صعب", diffClass: "diff-hard", value: 10 },
+      { text: "ما هي أكبر مدينة في قطاع غزة من حيث المساحة؟", answer: "مدينة غزة", category: "غزة", difficulty: "متوسط", diffClass: "diff-medium", value: 6 },
+      { text: "ما هو الاسم القديم لمدينة 'نابلس'؟", answer: "نيابوليس", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 8 },
+      { text: "كم عدد السجدات في القرآن الكريم؟", answer: "15 سجدة", category: "دين", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
+      { text: "ما هي المدينة التي تشتهر بصناعة الزجاج والخزف؟", answer: "الخليل", category: "ثقافة", difficulty: "سهل", diffClass: "diff-easy", value: 3 }
     ];
 
-    // بنك أسئلة الأرباح (تركيز على الألغاز والذكاء)
     const moneyQuestions = [
-      { text: "ما هو الشيء الذي يكسو الناس وهو عارٍ؟", answer: "الإبرة", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
-      { text: "شيء له أسنان ولا يعض، ما هو؟", answer: "المشط", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
-      { text: "ما هو الشيء الذي يحوي مدناً بلا بيوت وجبالاً بلا شجر؟", answer: "الخريطة", category: "ذكاء", difficulty: "متوسط", diffClass: "diff-medium", value: 350 },
-      { text: "كلمة من 5 أحرف، إذا حذفت حرفين يبقى حرف، ما هي؟", answer: "كلمة (حرفان)", category: "لغز", difficulty: "صعب", diffClass: "diff-hard", value: 600 },
-      { text: "ما هو الشيء الذي تذبحه وتبكي عليه؟", answer: "البصل", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
-      { text: "ما هو البيت الذي ليس فيه أبواب ولا نوافذ؟", answer: "بيت الشعر", category: "ذكاء", difficulty: "متوسط", diffClass: "diff-medium", value: 400 },
-      { text: "شيء تملكه أنت، ولكن يستخدمه الناس أكثر منك؟", answer: "اسمك", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 300 },
-      { text: "ما هو أضعف البيوت على وجه الأرض؟", answer: "بيت العنكبوت", category: "دينية", difficulty: "سهل", diffClass: "diff-easy", value: 200 },
-      { text: "شيء يمشي بلا أرجل ويدخل الأذن فقط؟", answer: "الصوت", category: "ذكاء", difficulty: "صعب", diffClass: "diff-hard", value: 550 },
-      { text: "ما هو الشيء الذي يتكلم بكل لغات العالم؟", answer: "صدى الصوت", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 450 }
+      { text: "ما هو الشيء الذي له عين واحدة ولكنه لا يرى؟", answer: "الإبرة", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
+      { text: "تاجر من التجار إذا قلعنا عينه طار، من هو؟", answer: "عطار", category: "ذكاء", difficulty: "متوسط", diffClass: "diff-medium", value: 300 },
+      { text: "ما هو الشيء الذي يحيا في الصيف ويموت في الشتاء؟", answer: "المكيف أو الثلج", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "ما هو الشيء الذي إذا غليته جمد؟", answer: "البيض", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 120 },
+      { text: "كم مرة ذكرت كلمة 'زكاة' في القرآن الكريم؟", answer: "32 مرة", category: "دين", difficulty: "صعب", diffClass: "diff-hard", value: 700 },
+      { text: "ما هو الشيء الذي يمشي أمامك ولا تراه؟", answer: "المستقبل / الهواء", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 250 },
+      { text: "من هو أول من صك العملة في الإسلام؟", answer: "عبد الملك بن مروان", category: "تاريخ", difficulty: "صعب", diffClass: "diff-hard", value: 600 },
+      { text: "شيء يسكن الجبال، ويجلس مع الرجال، ويلبس لبس النساء؟", answer: "الصقر", category: "لغز قديم", difficulty: "متوسط", diffClass: "diff-medium", value: 400 },
+      { text: "ما هو الشيء الذي ينبض بلا قلب؟", answer: "الساعة", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
+      { text: "كلمة إذا نطقت بها بطل معناها؟", answer: "الصمت", category: "ذكاء", difficulty: "متوسط", diffClass: "diff-medium", value: 350 }
     ];
 
-    function drawNewQuestion(drawType) {
+    function drawNewQuestion(type) {
       document.getElementById('initialState').style.display = 'none';
       document.getElementById('questionContent').style.display = 'block';
       document.getElementById('aBox').style.display = 'none';
       document.getElementById('btnShowAnswer').style.display = 'block';
 
-      // اختيار البنك المناسب
-      const bank = (drawType === 'money') ? moneyQuestions : stepsQuestions;
+      const bank = (type === 'steps') ? stepsQuestions : moneyQuestions;
       const q = bank[Math.floor(Math.random() * bank.length)];
 
-      // العرض
       document.getElementById('qCategory').innerText = q.category;
-      const diffBadge = document.getElementById('qDifficulty');
-      diffBadge.innerText = q.difficulty;
-      diffBadge.className = 'badge ' + q.diffClass;
+      const d = document.getElementById('qDifficulty');
+      d.innerText = q.difficulty; d.className = 'badge ' + q.diffClass;
       document.getElementById('qText').innerText = q.text;
-      
-      const rewardBox = document.getElementById('qReward');
-      if (drawType === 'money') {
-        rewardBox.innerText = `💰 جائزة الإجابة: ${q.value} عملة`;
-        rewardBox.style.backgroundColor = '#fef9e7'; rewardBox.style.borderColor = '#f1c40f'; rewardBox.style.color = '#b7950b';
-      } else {
-        rewardBox.innerText = `🎯 تقدم ${q.value} خطوات!`;
-        rewardBox.style.backgroundColor = '#e8f5e9'; rewardBox.style.borderColor = '#2ecc71'; rewardBox.style.color = '#145a32';
-      }
       document.getElementById('aText').innerText = q.answer;
+
+      const rb = document.getElementById('qReward');
+      if(type === 'steps') {
+        rb.innerText = `🎯 تحرك ${q.value} خطوات`;
+        rb.style.cssText = "background:#e8f5e9; border-color:#2ecc71; color:#145a32;";
+      } else {
+        rb.innerText = `💰 اربح ${q.value} عملة`;
+        rb.style.cssText = "background:#fef9e7; border-color:#f1c40f; color:#b7950b;";
+      }
     }
 
     function showAnswer() {
