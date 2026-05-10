@@ -2,36 +2,20 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <title>بنك أسئلة مونوبولي المطور V2</title>
+  <title>بنك أسئلة مونوبولي الذهبي V5</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    :root {
-      --primary: #145a32;
-      --secondary: #2ecc71;
-      --gold: #f39c12;
-      --bg: #f4f6f7;
-      --card-bg: #ffffff;
-      --text: #2c3e50;
-    }
-    body {
-      margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg); color: var(--text);
-      display: flex; justify-content: center; align-items: center; min-height: 100vh;
-    }
-    .container { width: 90%; max-width: 500px; text-align: center; }
-    .title { color: var(--primary); margin-bottom: 20px; font-size: 1.8rem; font-weight: bold; }
-    .card {
-      background: var(--card-bg); border-radius: 20px; padding: 25px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-top: 8px solid var(--primary);
-      min-height: 300px; display: flex; flex-direction: column; justify-content: center;
-    }
-    .badges { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+    :root { --primary: #145a32; --secondary: #2ecc71; --gold: #f39c12; --bg: #f4f6f7; --card-bg: #ffffff; --text: #2c3e50; }
+    body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .container { width: 95%; max-width: 500px; text-align: center; }
+    .card { background: var(--card-bg); border-radius: 20px; padding: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-top: 8px solid var(--primary); min-height: 350px; display: flex; flex-direction: column; justify-content: center; }
+    .badges { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
     .badge { padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; font-weight: bold; color: white; }
     .badge-category { background: #3498db; }
     .diff-easy { background: #2ecc71; }
     .diff-medium { background: #f39c12; }
     .diff-hard { background: #e74c3c; }
-    .question-text { font-size: 1.4rem; line-height: 1.5; margin-bottom: 20px; font-weight: bold; color: #34495e; }
+    .question-text { font-size: 1.3rem; line-height: 1.5; margin-bottom: 20px; font-weight: bold; color: #34495e; }
     .reward-box { font-size: 1.1rem; font-weight: bold; padding: 10px; border-radius: 10px; margin-bottom: 15px; border: 2px dashed; }
     .answer-box { display: none; background: #ecf0f1; padding: 15px; border-radius: 10px; font-size: 1.1rem; color: #16a085; font-weight: bold; margin-bottom: 15px; border-right: 5px solid #16a085; }
     .buttons-container { display: flex; flex-direction: column; gap: 10px; }
@@ -39,15 +23,12 @@
     .btn-primary { background: var(--primary); }
     .btn-gold { background: var(--gold); }
     .btn-secondary { background: #7f8c8d; }
-    #initialState { font-size: 1.2rem; color: #7f8c8d; }
   </style>
 </head>
 <body>
-
   <div class="container">
-    <h1 class="title">🇵🇸 بنك الأسئلة والجوائز</h1>
     <div class="card">
-      <div id="initialState">بانتظار سحب السؤال...</div>
+      <div id="initialState" style="font-size: 1.2rem; color: #7f8c8d;">🎲 100 سؤال بانتظارك! اضغط للبدء</div>
       <div id="questionContent" style="display: none;">
         <div class="badges">
           <span class="badge badge-category" id="qCategory"></span>
@@ -66,30 +47,112 @@
   </div>
 
   <script>
+    // 50 سؤال للخطوات
     const stepsQuestions = [
-      { text: "ما هي المدينة الفلسطينية التي تُلقب بـ 'عروس الشمال'؟", answer: "نابلس", category: "مدن", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
-      { text: "ما هي السورة التي بدأت بوصف رحلة الإسراء والمعراج؟", answer: "سورة الإسراء", category: "قرآن", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
-      { text: "كم عدد أبواب المسجد الأقصى المفتوحة حالياً؟", answer: "10 أبواب", category: "القدس", difficulty: "متوسط", diffClass: "diff-medium", value: 7 },
-      { text: "ما هو أعلى جبل في فلسطين؟", answer: "جبل الجرمق", category: "جغرافيا", difficulty: "صعب", diffClass: "diff-hard", value: 11 },
-      { text: "في أي مدينة يقع المسجد الإبراهيمي؟", answer: "الخليل", category: "معالم", difficulty: "سهل", diffClass: "diff-easy", value: 5 },
-      { text: "من هو صاحب لقب 'فارس الأمة' من الصحابة؟", answer: "أبو قتادة الأنصاري", category: "صحابة", difficulty: "صعب", diffClass: "diff-hard", value: 10 },
-      { text: "ما هي أكبر مدينة في قطاع غزة من حيث المساحة؟", answer: "مدينة غزة", category: "غزة", difficulty: "متوسط", diffClass: "diff-medium", value: 6 },
-      { text: "ما هو الاسم القديم لمدينة 'نابلس'؟", answer: "نيابوليس", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 8 },
-      { text: "كم عدد السجدات في القرآن الكريم؟", answer: "15 سجدة", category: "دين", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
-      { text: "ما هي المدينة التي تشتهر بصناعة الزجاج والخزف؟", answer: "الخليل", category: "ثقافة", difficulty: "سهل", diffClass: "diff-easy", value: 3 }
+      { text: "ما هي المدينة الملقبة بـ عروس الشمال؟", answer: "نابلس", category: "مدن", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "في أي مدينة يقع المسجد الإبراهيمي؟", answer: "الخليل", category: "معالم", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
+      { text: "ما هي السورة التي تسمى عروس القرآن؟", answer: "سورة الرحمن", category: "دين", difficulty: "سهل", diffClass: "diff-easy", value: 2 },
+      { text: "كم عدد أبواب المسجد الأقصى المفتوحة؟", answer: "10 أبواب", category: "القدس", difficulty: "متوسط", diffClass: "diff-medium", value: 6 },
+      { text: "ما هو أعلى جبل في فلسطين؟", answer: "جبل الجرمق", category: "جغرافيا", difficulty: "صعب", diffClass: "diff-hard", value: 10 },
+      { text: "ما هي المدينة التي تشتهر بصناعة الصابون النابلسي؟", answer: "نابلس", category: "مدن", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "من هو أول مؤذن في الإسلام؟", answer: "بلال بن رباح", category: "تاريخ", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "ما هي أقصر سورة في القرآن الكريم؟", answer: "سورة الكوثر", category: "دين", difficulty: "سهل", diffClass: "diff-easy", value: 2 },
+      { text: "ما هي المدينة الفلسطينية التي تقع فيها كنيسة المهد؟", answer: "بيت لحم", category: "مدن", difficulty: "متوسط", diffClass: "diff-medium", value: 5 },
+      { text: "ما هو البحر الذي يحد فلسطين من الغرب؟", answer: "البحر الأبيض المتوسط", category: "جغرافيا", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "كم عدد السنين التي نامها أهل الكهف؟", answer: "309 سنوات", category: "قصص قرآنية", difficulty: "صعب", diffClass: "diff-hard", value: 12 },
+      { text: "ما هي المدينة التي تسمى 'مدينة البرتقال'؟", answer: "يافا", category: "مدن", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
+      { text: "ما هي أقدم مدينة في العالم وتقع في فلسطين؟", answer: "أريحا", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 7 },
+      { text: "سورة في القرآن الكريم تخلو من البسملة؟", answer: "سورة التوبة", category: "قرآن", difficulty: "متوسط", diffClass: "diff-medium", value: 6 },
+      { text: "معركة فاصلة قادها صلاح الدين الأيوبي لتحرير القدس؟", answer: "معركة حطين", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 5 },
+      { text: "من هو النبي الذي ابتلعه الحوت؟", answer: "يونس عليه السلام", category: "أنبياء", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "ما هي بحيرة المياه العذبة الشهيرة في شمال فلسطين؟", answer: "بحيرة طبريا", category: "جغرافيا", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
+      { text: "كم عدد الخلفاء الراشدين؟", answer: "4 خلفاء", category: "تاريخ", difficulty: "سهل", diffClass: "diff-easy", value: 2 },
+      { text: "صحابي جليل لُقب بـ 'سيف الله المسلول'؟", answer: "خالد بن الوليد", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 5 },
+      { text: "في أي عام حدثت النكبة الفلسطينية؟", answer: "عام 1948", category: "تاريخ", difficulty: "صعب", diffClass: "diff-hard", value: 8 },
+      { text: "أولى القبلتين وثالث الحرمين الشريفين؟", answer: "المسجد الأقصى", category: "دين", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
+      { text: "كم عدد سور القرآن الكريم؟", answer: "114 سورة", category: "قرآن", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "مدينة فلسطينية بها قبر هاشم جد الرسول؟", answer: "غزة", category: "مدن", difficulty: "متوسط", diffClass: "diff-medium", value: 5 },
+      { text: "نبي قتل جالوت؟", answer: "داود عليه السلام", category: "أنبياء", difficulty: "متوسط", diffClass: "diff-medium", value: 6 },
+      { text: "سورة تعدل ثلث القرآن؟", answer: "سورة الإخلاص", category: "قرآن", difficulty: "سهل", diffClass: "diff-easy", value: 2 },
+      { text: "ما هو الميناء الأقدم والأشهر في فلسطين قديماً؟", answer: "ميناء يافا", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 5 },
+      { text: "من بنى قبة الصخرة المشرفة؟", answer: "عبد الملك بن مروان", category: "تاريخ", difficulty: "صعب", diffClass: "diff-hard", value: 9 },
+      { text: "مدينة في المثلث الفلسطيني مشهورة بجبالها؟", answer: "أم الفحم", category: "مدن", difficulty: "متوسط", diffClass: "diff-medium", value: 6 },
+      { text: "ما هي زهرة فلسطين الوطنية؟", answer: "شقائق النعمان", category: "ثقافة", difficulty: "صعب", diffClass: "diff-hard", value: 10 },
+      { text: "كم سنة استمرت الدعوة الإسلامية سراً؟", answer: "3 سنوات", category: "تاريخ", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "صحابي لُقب بـ 'أمين الأمة'؟", answer: "أبو عبيدة بن الجراح", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 6 },
+      { text: "من هو النبي الذي لُقب بـ 'كليم الله'؟", answer: "موسى عليه السلام", category: "أنبياء", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
+      { text: "السورة التي ذكرت فيها البسملة مرتين؟", answer: "سورة النمل", category: "قرآن", difficulty: "متوسط", diffClass: "diff-medium", value: 5 },
+      { text: "بحر يفصل بين فلسطين والأردن؟", answer: "البحر الميت", category: "جغرافيا", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "من هو خاتم الأنبياء والمرسلين؟", answer: "محمد ﷺ", category: "أنبياء", difficulty: "سهل", diffClass: "diff-easy", value: 2 },
+      { text: "كم عدد أشهر السنة الهجرية؟", answer: "12 شهراً", category: "دين", difficulty: "سهل", diffClass: "diff-easy", value: 2 },
+      { text: "قرية فلسطينية حدثت بها مجزرة شهيرة عام 1948؟", answer: "دير ياسين", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 7 },
+      { text: "ما هو الطائر الذي كان دليلاً لسليمان عليه السلام؟", answer: "الهدهد", category: "قصص قرآنية", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "ما هي العاصمة التي أسسها العباسيون؟", answer: "بغداد", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 5 },
+      { text: "في أي مدينة يقع المسجد الأموي؟", answer: "دمشق", category: "معالم", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "من هو قائد معركة عين جالوت؟", answer: "سيف الدين قطز", category: "تاريخ", difficulty: "صعب", diffClass: "diff-hard", value: 11 },
+      { text: "ما هي أطول سورة في القرآن الكريم؟", answer: "سورة البقرة", category: "قرآن", difficulty: "سهل", diffClass: "diff-easy", value: 3 },
+      { text: "ما هو اسم الباب الرئيسي للمسجد الأقصى من جهة الغرب؟", answer: "باب المغاربة", category: "القدس", difficulty: "صعب", diffClass: "diff-hard", value: 10 },
+      { text: "مدينة فلسطينية ساحلية تقع شمال قطاع غزة مباشرة؟", answer: "عسقلان", category: "جغرافيا", difficulty: "متوسط", diffClass: "diff-medium", value: 6 },
+      { text: "من هو الصحابي الذي جمع القرآن في مصحف واحد؟", answer: "عثمان بن عفان", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 5 },
+      { text: "نبي آتاه الله الحكمة وفصل الخطاب؟", answer: "داود عليه السلام", category: "أنبياء", difficulty: "صعب", diffClass: "diff-hard", value: 9 },
+      { text: "ما هو الحيوان الذي صام عن الكلام في القرآن؟", answer: "زكريا (ليس حيواناً بل نبي صام عن الكلام)", category: "فخ ذكي", difficulty: "صعب", diffClass: "diff-hard", value: 12 },
+      { text: "صحابي جليل نام في فراش النبي ليلة الهجرة؟", answer: "علي بن أبي طالب", category: "تاريخ", difficulty: "سهل", diffClass: "diff-easy", value: 4 },
+      { text: "أكبر قارات العالم مساحة؟", answer: "قارة آسيا", category: "جغرافيا", difficulty: "سهل", diffClass: "diff-easy", value: 2 },
+      { text: "من هو عم النبي الذي استشهد في معركة أحد؟", answer: "حمزة بن عبد المطلب", category: "تاريخ", difficulty: "متوسط", diffClass: "diff-medium", value: 5 }
     ];
 
+    // 50 لغز وسؤال للأرباح
     const moneyQuestions = [
-      { text: "ما هو الشيء الذي له عين واحدة ولكنه لا يرى؟", answer: "الإبرة", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
-      { text: "تاجر من التجار إذا قلعنا عينه طار، من هو؟", answer: "عطار", category: "ذكاء", difficulty: "متوسط", diffClass: "diff-medium", value: 300 },
-      { text: "ما هو الشيء الذي يحيا في الصيف ويموت في الشتاء؟", answer: "المكيف أو الثلج", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
-      { text: "ما هو الشيء الذي إذا غليته جمد؟", answer: "البيض", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 120 },
-      { text: "كم مرة ذكرت كلمة 'زكاة' في القرآن الكريم؟", answer: "32 مرة", category: "دين", difficulty: "صعب", diffClass: "diff-hard", value: 700 },
-      { text: "ما هو الشيء الذي يمشي أمامك ولا تراه؟", answer: "المستقبل / الهواء", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 250 },
-      { text: "من هو أول من صك العملة في الإسلام؟", answer: "عبد الملك بن مروان", category: "تاريخ", difficulty: "صعب", diffClass: "diff-hard", value: 600 },
-      { text: "شيء يسكن الجبال، ويجلس مع الرجال، ويلبس لبس النساء؟", answer: "الصقر", category: "لغز قديم", difficulty: "متوسط", diffClass: "diff-medium", value: 400 },
-      { text: "ما هو الشيء الذي ينبض بلا قلب؟", answer: "الساعة", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
-      { text: "كلمة إذا نطقت بها بطل معناها؟", answer: "الصمت", category: "ذكاء", difficulty: "متوسط", diffClass: "diff-medium", value: 350 }
+      { text: "ما هو الشيء الذي له عين واحدة ولا يرى؟", answer: "الإبرة", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "ما هو الشيء الذي تذبحه وتبكي عليه؟", answer: "البصل", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
+      { text: "تاجر إذا قلعنا عينه طار؟", answer: "عطار", category: "ذكاء", difficulty: "متوسط", diffClass: "diff-medium", value: 300 },
+      { text: "ما هو الشيء الذي ينبض بلا قلب؟", answer: "الساعة", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "شيء إذا غليته جمد؟", answer: "البيض", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 200 },
+      { text: "كم مرة ذكرت الزكاة في القرآن؟", answer: "32 مرة", category: "دين", difficulty: "صعب", diffClass: "diff-hard", value: 800 },
+      { text: "ابن الماء، وإذا وُضع فيه مات؟", answer: "الثلج", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 300 },
+      { text: "شيء كلما أخذت منه كبر؟", answer: "الحفرة", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
+      { text: "له أوراق ولكنه ليس شجرة؟", answer: "الكتاب", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "عقرب لا يلدغ ولا يخاف منه أحد؟", answer: "عقرب الساعة", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "شهر ميلادي إذا حذفت أوله أصبح اسم فاكهة؟", answer: "تموز (موز)", category: "ذكاء", difficulty: "صعب", diffClass: "diff-hard", value: 500 },
+      { text: "شيء قلبه يأكل قشره؟", answer: "الشمعة المشتعلة", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 250 },
+      { text: "هي أخت خالك، وليست خالتك.. فمن تكون؟", answer: "أمك", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
+      { text: "ما هو الشيء الذي يحملك وتحمله في نفس الوقت؟", answer: "الحذاء", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 200 },
+      { text: "يسمع بلا أذن ويتكلم بلا لسان؟", answer: "الهاتف", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "ما هو الباب الذي لا يمكن فتحه؟", answer: "الباب المفتوح", category: "ذكاء", difficulty: "صعب", diffClass: "diff-hard", value: 400 },
+      { text: "ما هو الشيء الذي لا يمشي إلا بالضرب؟", answer: "المسمار", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
+      { text: "شيء يكسو الناس وهو عارٍ تماماً؟", answer: "الإبرة", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 250 },
+      { text: "شخص يرى صديقه وعدوه بعين واحدة، من هو؟", answer: "الأعور", category: "لغز", difficulty: "صعب", diffClass: "diff-hard", value: 600 },
+      { text: "ما هو الشيء الذي يجري ولا يمشي؟", answer: "الماء / النهر", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "حامل ومحمول، نصفه ناشف ونصفه مبلول؟", answer: "السفينة", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 350 },
+      { text: "له أسنان كثيرة ولكنه لا يعض أبداً؟", answer: "المشط", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "شيء لا يمكنك لمسه ولكن يمكنك كسره بسهولة؟", answer: "الوعد", category: "ذكاء", difficulty: "متوسط", diffClass: "diff-medium", value: 300 },
+      { text: "ما هو الشيء الذي يقرصك ولا تراه؟", answer: "البرد / الجوع", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
+      { text: "يمشي بلا رجلين ويبكي بلا عينين؟", answer: "السحاب", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 250 },
+      { text: "كله ثقوب ومع ذلك يحفظ الماء، فما هو؟", answer: "الإسفنج", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
+      { text: "ترى كل شيء أمامها ولا تمتلك عيوناً؟", answer: "المرآة", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "عائلة تتكون من 6 بنات وأخ واحد لكل منهن، كم عددهم؟", answer: "7 أشخاص", category: "رياضيات", difficulty: "صعب", diffClass: "diff-hard", value: 500 },
+      { text: "تراه في الليل 3 مرات وفي النهار مرة واحدة؟", answer: "حرف اللام", category: "ذكاء", difficulty: "صعب", diffClass: "diff-hard", value: 600 },
+      { text: "من هو خال أولاد عمتك؟", answer: "والدك", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 300 },
+      { text: "ينام دائماً مرتدياً حذاءه ولا يفارقه أبداً؟", answer: "الحصان", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 200 },
+      { text: "صانعه لا يحبه، ومشتريه لا يستخدمه، ومستخدمه لا يراه؟", answer: "التابوت / الكفن", category: "لغز", difficulty: "صعب", diffClass: "diff-hard", value: 700 },
+      { text: "طائر يلد ولا يبيض؟", answer: "الخفاش (الوطواط)", category: "معلومات", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
+      { text: "شيء بحجم الكف ويلف الدنيا كلها؟", answer: "الطابع البريدي", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 250 },
+      { text: "له رقبة ولكن ليس له رأس؟", answer: "الزجاجة", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "إذا دخل الماء ضاع واختفى؟", answer: "الملح / السكر", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "لا يتكلم، وإذا أكل صدق وإذا جاع كذب؟", answer: "الساعة (الزنبرك)", category: "ذكاء", difficulty: "صعب", diffClass: "diff-hard", value: 450 },
+      { text: "شجرة ليس لها ظل وليس لها ثمار؟", answer: "شجرة العائلة", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 300 },
+      { text: "رقم إذا ضربته في نفسه وأضفت إليه 5 أصبح 30؟", answer: "الرقم 5", category: "رياضيات", difficulty: "متوسط", diffClass: "diff-medium", value: 400 },
+      { text: "ما هو الشيء الذي ليس له بداية ولا نهاية؟", answer: "الدائرة / الخاتم", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 150 },
+      { text: "شيء يولد كل شهر مرة واحدة؟", answer: "الهلال", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 250 },
+      { text: "حيوان لا يشرب الماء وإذا شرب مات فوراً؟", answer: "الجرذ الكنغري", category: "معلومات", difficulty: "صعب", diffClass: "diff-hard", value: 800 },
+      { text: "ما هو الشيء الذي يخترق الزجاج ولا يكسره؟", answer: "الضوء", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "بنك لا يتعامل بالمال أبداً؟", answer: "بنك الدم", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 },
+      { text: "أوله في لبنان وآخره في إسطنبول؟", answer: "حرف اللام", category: "ذكاء", difficulty: "صعب", diffClass: "diff-hard", value: 500 },
+      { text: "يرفع أثقالاً وسفناً ولا يستطيع رفع مسمار؟", answer: "البحر", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 300 },
+      { text: "ما هو القبر الذي سار بصاحبه؟", answer: "حوت يونس عليه السلام", category: "دين", difficulty: "متوسط", diffClass: "diff-medium", value: 400 },
+      { text: "5 أشخاص تحت مظلة واحدة ولا يبتل أحد منهم، كيف؟", answer: "لأنها لم تكن تمطر", category: "ذكاء", difficulty: "سهل", diffClass: "diff-easy", value: 200 },
+      { text: "ما هو الشيء الذي ترميه كلما احتجت إليه؟", answer: "شبكة الصيد", category: "لغز", difficulty: "متوسط", diffClass: "diff-medium", value: 350 },
+      { text: "يكتب ولا يقرأ أبداً؟", answer: "القلم", category: "لغز", difficulty: "سهل", diffClass: "diff-easy", value: 100 }
     ];
 
     function drawNewQuestion(type) {
@@ -97,19 +160,16 @@
       document.getElementById('questionContent').style.display = 'block';
       document.getElementById('aBox').style.display = 'none';
       document.getElementById('btnShowAnswer').style.display = 'block';
-
       const bank = (type === 'steps') ? stepsQuestions : moneyQuestions;
       const q = bank[Math.floor(Math.random() * bank.length)];
-
       document.getElementById('qCategory').innerText = q.category;
-      const d = document.getElementById('qDifficulty');
-      d.innerText = q.difficulty; d.className = 'badge ' + q.diffClass;
+      document.getElementById('qDifficulty').innerText = q.difficulty;
+      document.getElementById('qDifficulty').className = 'badge ' + q.diffClass;
       document.getElementById('qText').innerText = q.text;
       document.getElementById('aText').innerText = q.answer;
-
       const rb = document.getElementById('qReward');
       if(type === 'steps') {
-        rb.innerText = `🎯 تحرك ${q.value} خطوات`;
+        rb.innerText = `🎯 تقدم ${q.value} خطوات`;
         rb.style.cssText = "background:#e8f5e9; border-color:#2ecc71; color:#145a32;";
       } else {
         rb.innerText = `💰 اربح ${q.value} عملة`;
